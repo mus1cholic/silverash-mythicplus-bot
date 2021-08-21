@@ -1,2 +1,2 @@
-# silverash-mythicplus-bot
+# Silverash MythicPlus Bot
 M+ bot for Silverash
