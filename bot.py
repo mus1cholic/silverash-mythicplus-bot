@@ -8,4 +8,8 @@ bot_client = commands.Bot(command_prefix='*')
 async def on_ready():
     print("Bot is ready")
 
-bot_client.run('ODc4NzIyMjQ5NDQ2ODE3ODUy.YSFT3g.AH_pdefkJHeQ1Gcn7V0H8rYju8E')
+with open('token.txt', 'r') as f:
+    lines = f.readlines()
+
+    # Running the actual bot
+    bot_client.run(f'{lines[0]}')
