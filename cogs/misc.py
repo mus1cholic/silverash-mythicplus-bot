@@ -5,6 +5,8 @@ from discord.ext import commands
 
 class Misc(commands.Cog):
     def __init__(self, bot_client):
+        bot_client.remove_command('help')
+        
         self.bot_client = bot_client
 
     @commands.command()
@@ -13,8 +15,8 @@ class Misc(commands.Cog):
         Provides a description of all the commands for this bot
         """
 
-        await ctx.send("***Commands for individuals:***\n" +
-                       "`*score <character>`: Displays the current Raider.IO Mythic+ score of the provided character.\n" +
+        await ctx.send("**Commands for individuals:**\n" +
+                       "`~score <character>`: Displays the current Raider.IO Mythic+ score of the provided character.\n" +
                        "")
 
 def setup(bot_client):
