@@ -4,7 +4,7 @@ import sys, traceback
 
 from discord.ext import commands
 
-bot_client = commands.Bot(command_prefix='*')
+bot_client = commands.Bot(command_prefix='~')
 
 # When the bot is ready (occurs in startup)
 @bot_client.event
