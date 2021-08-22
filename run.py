@@ -12,7 +12,7 @@ async def on_ready():
     print(f'\n\nLogged in as: {bot_client.user.name} - {bot_client.user.id}\nVersion: {discord.__version__}\n')
 
     # Changes the bot's status (the Playing XXXX thing)
-    await bot_client.change_presence(activity=discord.Game(name='Currently under development!', type=0))
+    await bot_client.change_presence(activity=discord.Game(name='Under development!', type=0))
 
     # Loading all the cogs
     for f in os.listdir('./cogs'):
