@@ -17,17 +17,25 @@ class Individuals(commands.Cog):
 
         realm, server, character_name = "", "", ""
 
-        if args != "":
+        if args == "":
         	# TODO: write code to see whether setcharacter has been done for this character 
-        
+        	pass
         else:
-        	character_split = args.split(" ")
+        	character_split = args.split("/")
+
+        	# TODO: refactor
+	        try:
+	            assert len(character_split) == 3, "`<character>` field must follow format `realm/server/character_name`!"
+	        except AssertionError:
+	            await ctx.send("`<character>` field must follow format `realm/server/character_name`!")
+	            raise
+
         	realm = character_split[0]
 	        server = character_split[1]
 	        character_name = character_split[2]
 
 
-	    # TODO: refactor out this part?
+	    # TODO: refactor out this part too?
         with open('./apiurl.txt', 'r') as f:
             api_url = f.readlines()[0]
             api_url = api_url.replace("{}", server, 1)
@@ -44,7 +52,7 @@ class Individuals(commands.Cog):
 
         request_json = r.json()
 
-        await ctx.send(f'`{character_name}`'s current Mythic+ score: {request_json["current_mythic_rating"]["rating"]})
+        await ctx.send(f"`{character_name}`'s current Mythic+ score: {request_json['current_mythic_rating']['rating']}")
 
 def setup(bot_client):
     bot_client.add_cog(Individuals(bot_client))
