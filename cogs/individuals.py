@@ -209,7 +209,7 @@ class Individuals(commands.Cog):
             setcharacters_json = json.load(f)
 
         if str(ctx.message.author.id) in setcharacters_json.keys():
-            await ctx.send(f'Character `{setcharacters_json[str(ctx.message.author.id)]["character_name"]}` was previously set to this account. Overriding it...')
+            await ctx.send(f'Character `{setcharacters_json[str(ctx.message.author.id)]["character_name"]}` was previously linked to this account. Overriding it...')
         
         with open('./apiurl.txt', 'r') as f:
             api_url = constants.API_URL
@@ -229,7 +229,7 @@ class Individuals(commands.Cog):
         setcharacters_json[str(ctx.message.author.id)] = {'region': character_split[0], 'realm': character_split[1], 'character_name': character_split[2]}
         with open('./data/setcharacters.json', 'w') as f:
             json.dump(setcharacters_json, f)
-        await ctx.send(f'{ctx.message.author.mention}, character `{character_split[2]}` is now being tracked.')
+        await ctx.send(f'{ctx.message.author.mention}, character `{character_split[2]}` has now been linked to your account.')
 
 
 def setup(bot_client):
