@@ -1,5 +1,7 @@
 API_URL = "https://raider.io/api/v1/characters/profile?region={}&realm={}&name={}&fields={}"
 
+DEFAULT_SETCHARACTERS_JSON = {'example_discord_unique_id': {'region': 'us', 'realm': 'stormrage', 'character_name': 'sample_name'}}
+
 spec_ids = {
 	'Death Knight': {
 		'Blood': {

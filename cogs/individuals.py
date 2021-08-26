@@ -1,5 +1,6 @@
 import discord
 import requests
+import os
 
 from . import constants
 from discord.ext import commands
@@ -28,8 +29,20 @@ class Individuals(commands.Cog):
         api_fields = ['mythic_plus_scores', 'mythic_plus_ranks', 'mythic_plus_best_runs', 'mythic_plus_alternate_runs']
 
         if args == "":
-        	# TODO: write code to see whether setcharacter has been done for this character 
-        	pass
+            if os.path.isfile("./data/setcharacters.json"):
+                with open('./data/setcharacters.json', 'r') as f:
+                    setcharacters_json = json.load(f)
+
+                    if not str(ctx.message.author.id) in setcharacters_json.keys():
+                        await ctx.send(f'You have not yet set a character to your discord account. To do so, type `~setcharacter <character>`')
+                        break
+
+                    region = setcharacters_json[str(ctx.message.author.id)][0]
+                    realm = setcharacters_json[str(ctx.message.author.id)][1]
+                    character_name = setcharacters_json[str(ctx.message.author.id)][2]
+            else:
+                await ctx.send(f'You have not yet set a character to your discord account. To do so, type `~setcharacter <character>`')
+                break
         else:
         	character_split = args.split("/")
 
@@ -150,6 +163,66 @@ class Individuals(commands.Cog):
                                                                   f"Theater of Pain - **{'+' * top_best['num_keystone_upgrades']}{top_best['mythic_level']}** {top_best['affixes'][0]['name']}, Score: **{top_best['score']:.1f}**\n", inline=False)
 
         await ctx.send(embed=character_embed)
+
+    @commands.command()
+    async def setcharacter(self, ctx, *, args):
+        """
+        Sets a default character for the discord user
+        """
+
+        if args == "":
+            try:
+                assert args != "", "`<character>` field must not be empty`!"
+            except AssertionError:
+                await ctx.send("`<character>` field must not be empty`!")
+                raise
+        else:
+            character_split = args.split("/")
+
+            # TODO: refactor
+            try:
+                assert len(character_split) == 3, "`<character>` field must follow format `region/realm/character_name`!"
+            except AssertionError:
+                await ctx.send("`<character>` field must follow format `region/realm/character_name`!")
+                raise
+
+            region = character_split[0]
+            realm = character_split[1]
+            character_name = character_split[2]
+
+        if not os.path.isfile("./data/setcharacters.json"):
+            print("Required file setcharacters.json does not exist, creating one now")
+            
+            with open('./data/setcharacters.json', 'a') as dumpfile:
+                json.dump(constants.DEFAULT_SETCHARACTERS_JSON, dumpfile, indent=4)
+
+
+        with open('./data/setcharacters.json', 'r') as f:
+            setcharacters_json = json.load(f)
+
+        if str(ctx.message.author.id) in setcharacters_json.keys():
+            await ctx.send(f'Character `{setcharacters_json[str(ctx.message.author.id)]["character_name"]}` was previously set to this account. Overriding it...')
+        
+        with open('./apiurl.txt', 'r') as f:
+            api_url = constants.API_URL
+            api_url = api_url.replace("{}", region, 1)
+            api_url = api_url.replace("{}", realm, 1)
+            api_url = api_url.replace("{}", character_name, 1)
+            api_url = api_url.replace("{}", '%2C'.join(api_fields))
+
+        r = requests.get(api_url)
+
+        try:
+            assert r.status_code != 400, f"character `{character_name}` from `{realm}` does not exist, perhaps you misspelled?"
+        except AssertionError:
+            await ctx.send(f"character `{character_name}` from `{realm}` does not exist, perhaps you misspelled?")
+            raise
+        
+        setcharacters_json[str(ctx.message.author.id)] = {'region': character_split[0], 'realm': character_split[1], 'character_name': character_split[2]}
+        with open(constants.API_URL, 'w') as f:
+            json.dump(setcharacters_json, f)
+        await ctx.send(f'{ctx.message.author.mention}, character `{character_split[2]}` is now being tracked.')
+
 
 def setup(bot_client):
     bot_client.add_cog(Individuals(bot_client))
