@@ -1,6 +1,7 @@
 import discord
 import os
 import json
+import requests
 
 from discord.ext import commands
 
@@ -27,6 +28,10 @@ class Ioincrease(commands.Cog):
         except AssertionError:
             await ctx.send("`<character>` field must follow format `realm/server/character_name`!")
             raise
+
+        realm = character_split[0]
+        server = character_split[1]
+        character_name = character_split[2]
         
         if not os.path.isfile("data/tracking.json"):
             print("Required file tracking.json does not exist, creating one now")
@@ -40,11 +45,23 @@ class Ioincrease(commands.Cog):
 
         with open('./data/tracking.json', 'r') as f:
             tracking = json.load(f)
-            
+
         if str(ctx.message.author.id) in tracking.keys():
             await ctx.send(f'{ctx.message.author.mention}, character `{tracking[str(ctx.message.author.id)]["character_name"]}` is already being tracked. To untrack this character, do `~untrack <character>`')
-        else:
-            # TODO: make an assert that <character> is trackable
+        else:   
+            with open('./apiurl.txt', 'r') as f:
+                api_url = f.readlines()[0]
+                api_url = api_url.replace("{}", server, 1)
+                api_url = api_url.replace("{}", character_name, 1)
+                api_url = api_url.replace("{}", realm, 1)
+
+            r = requests.get(api_url)
+
+            try:
+                assert r.status_code != 404, f"character `{character_name}` from `{server}` does not exist, perhaps you misspelled?"
+            except AssertionError:
+                await ctx.send(f"character `{character_name}` from `{server}` does not exist, perhaps you misspelled?")
+                raise
             
             tracking[str(ctx.message.author.id)] = {'realm': character_split[0], 'server': character_split[1], 'character_name': character_split[2]}
             with open('./data/tracking.json', 'w') as f:
