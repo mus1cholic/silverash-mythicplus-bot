@@ -1,6 +1,7 @@
 import discord
 import requests
 import os
+import json
 
 from . import constants
 from discord.ext import commands
@@ -20,29 +21,35 @@ class Individuals(commands.Cog):
         return char_role
 
     @commands.command()
-    async def score(self, ctx, *, args):
+    async def score(self, ctx, *args):
         """
         Sends out the score of the player
         """
 
         region, realm, character_name = "", "", ""
-        api_fields = ['mythic_plus_scores', 'mythic_plus_ranks', 'mythic_plus_best_runs', 'mythic_plus_alternate_runs']
+        api_fields = constants.API_FIELDS
 
-        if args == "":
+        if len(args) == 0:
             if os.path.isfile("./data/setcharacters.json"):
                 with open('./data/setcharacters.json', 'r') as f:
                     setcharacters_json = json.load(f)
 
                     if not str(ctx.message.author.id) in setcharacters_json.keys():
                         await ctx.send(f'You have not yet set a character to your discord account. To do so, type `~setcharacter <character>`')
-                        break
+                        return
 
-                    region = setcharacters_json[str(ctx.message.author.id)][0]
-                    realm = setcharacters_json[str(ctx.message.author.id)][1]
-                    character_name = setcharacters_json[str(ctx.message.author.id)][2]
+                    region = setcharacters_json[str(ctx.message.author.id)]['region']
+                    realm = setcharacters_json[str(ctx.message.author.id)]['realm']
+                    character_name = setcharacters_json[str(ctx.message.author.id)]['character_name']
             else:
                 await ctx.send(f'You have not yet set a character to your discord account. To do so, type `~setcharacter <character>`')
-                break
+                return
+        elif len(args) >= 1:
+            try:
+                assert len(args) <= 1, "`score` command must follow format `~score <character>`!"
+            except AssertionError:
+                await ctx.send("`score` command must follow format `~score <character>`!")
+                raise
         else:
         	character_split = args.split("/")
 
@@ -170,6 +177,8 @@ class Individuals(commands.Cog):
         Sets a default character for the discord user
         """
 
+        api_fields = constants.API_FIELDS
+
         if args == "":
             try:
                 assert args != "", "`<character>` field must not be empty`!"
@@ -196,7 +205,6 @@ class Individuals(commands.Cog):
             with open('./data/setcharacters.json', 'a') as dumpfile:
                 json.dump(constants.DEFAULT_SETCHARACTERS_JSON, dumpfile, indent=4)
 
-
         with open('./data/setcharacters.json', 'r') as f:
             setcharacters_json = json.load(f)
 
@@ -219,7 +227,7 @@ class Individuals(commands.Cog):
             raise
         
         setcharacters_json[str(ctx.message.author.id)] = {'region': character_split[0], 'realm': character_split[1], 'character_name': character_split[2]}
-        with open(constants.API_URL, 'w') as f:
+        with open('./data/setcharacters.json', 'w') as f:
             json.dump(setcharacters_json, f)
         await ctx.send(f'{ctx.message.author.mention}, character `{character_split[2]}` is now being tracked.')
 

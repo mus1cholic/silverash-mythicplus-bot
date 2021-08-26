@@ -1,4 +1,5 @@
 API_URL = "https://raider.io/api/v1/characters/profile?region={}&realm={}&name={}&fields={}"
+API_FIELDS = ['mythic_plus_scores', 'mythic_plus_ranks', 'mythic_plus_best_runs', 'mythic_plus_alternate_runs']
 
 DEFAULT_SETCHARACTERS_JSON = {'example_discord_unique_id': {'region': 'us', 'realm': 'stormrage', 'character_name': 'sample_name'}}
 
