@@ -1,7 +1,7 @@
 import discord
 import requests
-import constants
 
+from . import constants
 from discord.ext import commands
 
 # Contains commands/listeners relevant to individuals
@@ -83,42 +83,43 @@ class Individuals(commands.Cog):
         # individual dungeon data
         best, nw_best, sd_best, halls_best, plaguefall_best, mists_best, spires_best, top_best, dos_best = request_json['mythic_plus_best_runs'], None, None, None, None, None, None, None, None
         for dungeon in best:
-            if best["dungeon"] == "The Necrotic Wake":
-                nw_best = best["dungeon"]
-            elif best["dungeon"] == "Sanguine Depths":
-                sd_best = best["dungeon"]
-            elif best["dungeon"] == "Spires of Ascension":
-                spires_best = best["dungeon"]
-            elif best["dungeon"] == "Mists of Tirna Scithe":
-                mists_best = best["dungeon"]
-            elif best["dungeon"] == "Halls of Atonement":
-                halls_best = best["dungeon"]
-            elif best["dungeon"] == "Plaguefall":
-                pf_best = best["dungeon"]
-            elif best["dungeon"] == "Theatre of Pain":
-                top_best = best["dungeon"]
-            elif best["dungeon"] == "De Other Side":
-                dos_best = best["dungeon"]
+            # breakpoint()
+            if dungeon["dungeon"] == "The Necrotic Wake":
+                nw_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Sanguine Depths":
+                sd_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Spires of Ascension":
+                spires_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Mists of Tirna Scithe":
+                mists_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Halls of Atonement":
+                halls_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Plaguefall":
+                pf_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Theatre of Pain":
+                top_best = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "De Other Side":
+                dos_best = dungeon["dungeon"]
 
         # alternate dungeon data
         alt, nw_alt, sd_alt, halls_alt, plaguefall_alt, mists_alt, spires_alt, top_alt, dos_alt = request_json['mythic_plus_alternate_runs'], None, None, None, None, None, None, None, None
         for dungeon in alt:
-            if alt["dungeon"] == "The Necrotic Wake":
-                nw_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Sanguine Depths":
-                sd_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Spires of Ascension":
-                spires_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Mists of Tirna Scithe":
-                mists_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Halls of Atonement":
-                halls_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Plaguefall":
-                pf_alt = alt["dungeon"]
-            elif alt["dungeon"] == "Theatre of Pain":
-                top_alt = alt["dungeon"]
-            elif alt["dungeon"] == "De Other Side":
-                dos_alt = alt["dungeon"]
+            if dungeon["dungeon"] == "The Necrotic Wake":
+                nw_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Sanguine Depths":
+                sd_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Spires of Ascension":
+                spires_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Mists of Tirna Scithe":
+                mists_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Halls of Atonement":
+                halls_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Plaguefall":
+                pf_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "Theatre of Pain":
+                top_alt = dungeon["dungeon"]
+            elif dungeon["dungeon"] == "De Other Side":
+                dos_alt = dungeon["dungeon"]
 
         character_embed = discord.Embed(title=f"{character_name}'s Raider.IO Profile", url=f"https://raider.io/characters/{realm}/{server}/{character_name}", 
             description="", color=discord.Color.blue()) # TODO: pair color with spec (shaman is blue, etc...)
@@ -130,16 +131,16 @@ class Individuals(commands.Cog):
                                                                    # f"Healer Score: 0\n" +
                                                                    # f"DPS Score: 0", inline=False)
 
-        character_embed.add_field(name="Rankings", value=f"{char_spec} {char_class} Rank: Realm #{char_spec_rank['realm']}, Region #{char_spec_rank['region']}, World #{char_spec_rank['world']}\n" +
-                                                         f"Overall {char_class} Rank: Realm #{char_class_rank['realm']}, Region #{char_class_rank['region']}, World #{char_class_rank['world']}\n" +
-                                                         f"Overall {char_role} Rank: Realm #{char_role_rank['realm']}, Region #{char_role_rank['region']}, World #{char_role_rank['world']}", inline=False)
+        character_embed.add_field(name="Rankings", value=f"**{char_spec} {char_class}** Rank: Realm **#{char_spec_rank['realm']}**, Region **#{char_spec_rank['region']}**, World **#{char_spec_rank['world']}**\n" +
+                                                         f"Overall **{char_class}** Rank: Realm **#{char_class_rank['realm']}**, Region **#{char_class_rank['region']}**, World **#{char_class_rank['world']}**\n" +
+                                                         f"Overall **{char_role}** Rank: Realm **#{char_role_rank['realm']}**, Region **#{char_role_rank['region']}**, World **#{char_role_rank['world']}**", inline=False)
 
-        character_embed.add_field(name="**Best Dungeons**", value="\u200b", inline=False)
+        # character_embed.add_field(name="**Best Dungeons**", value="\u200b", inline=False)
 
-        character_embed.add_field(name="Dungeon Name", value="Mists of Tirna Scithe\nNW", inline=True)
-        character_embed.add_field(name="Fortified", value="13\n15", inline=True)
-        character_embed.add_field(name="Tyrannical", value="19\n11", inline=True)
-        character_embed.add_field(name="Total Score", value="232.4\n101.3", inline=True)
+        # character_embed.add_field(name="Dungeon Name", value="Mists of Tirna Scithe\nNW", inline=True)
+        # character_embed.add_field(name="Fortified", value="13\n15", inline=True)
+        # character_embed.add_field(name="Tyrannical", value="19\n11", inline=True)
+        # character_embed.add_field(name="Total Score", value="232.4\n101.3", inline=True)
 
         await ctx.send(embed=character_embed)
 

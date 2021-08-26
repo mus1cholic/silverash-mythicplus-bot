@@ -16,7 +16,7 @@ async def on_ready():
 
     # Loading all the cogs
     for f in os.listdir('./cogs'):
-        if f.endswith('.py'):
+        if f.endswith('.py') and f != "constants.py": # TODO: move this out of cogs
             extension_name = f'cogs.{f[:-3]}'
             try:
                 bot_client.load_extension(extension_name)
