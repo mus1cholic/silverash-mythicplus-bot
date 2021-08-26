@@ -52,7 +52,28 @@ class Individuals(commands.Cog):
 
         request_json = r.json()
 
-        await ctx.send(f"`{character_name}`'s current Mythic+ score: {request_json['current_mythic_rating']['rating']}")
+        total_score = request_json['current_mythic_rating']['rating']
+
+        character_embed = discord.Embed(title=f"{character_name}'s Raider.IO Profile", url=f"https://raider.io/characters/{realm}/{server}/{character_name}", 
+            description="", color=dicord.Color.blue()) # TODO: pair color with spec (shaman is blue, etc...)
+
+        character_embed.set_author(name=f"Requested by {ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+
+        character_embed.add_field(name="Overall Statistics", value=f"**Total Score: {total_score}**\n" +
+                                                                   f"Tank Score: 0\n" +
+                                                                   f"Healer Score: 0\n" +
+                                                                   f"DPS Score: 0", inline=False)
+
+        character_embed.add_field(name="Rankings", value=f"Spec Rank: #100 Frost Mage")
+
+        character_embed.add_field(name="Best Dungeons")
+
+        character_embed.add_field(name="Dungeon Name", value="DOS\nNW", inline=True)
+        character_embed.add_field(name="Fortified", value="13\n15", inline=True)
+        character_embed.add_field(name="Tyrannical", value="19\n11", inline=True)
+        character_embed.add_field(name="Total Score", value="232.4\n101.3", inline=True)
+
+        await ctx.send(embed=character_embed)
 
 def setup(bot_client):
     bot_client.add_cog(Individuals(bot_client))
