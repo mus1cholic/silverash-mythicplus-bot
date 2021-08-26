@@ -61,3 +61,4 @@ target/
 token.txt
 apiurl.txt
 data/
+*.DS_Store
